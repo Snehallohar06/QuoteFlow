@@ -1,0 +1,91 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   QuoteFlow design tokens.
+
+   White surfaces, navy structure, blue action. Semantic colours are reserved
+   for status meaning so a badge's colour always carries information.
+   --------------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Navy: structure - sidebar, headings, table headers */
+  --color-navy-50: #f3f6fa;
+  --color-navy-100: #e3eaf3;
+  --color-navy-200: #c6d4e6;
+  --color-navy-300: #9bb3d1;
+  --color-navy-400: #678db8;
+  --color-navy-500: #3f6b9e;
+  --color-navy-600: #2d5080;
+  --color-navy-700: #1e3a5f;
+  --color-navy-800: #182f4d;
+  --color-navy-900: #132740;
+
+  /* Blue: action - primary buttons, links, focus rings */
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+
+  --radius-card: 0.625rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 font-sans text-[15px] text-slate-800 antialiased;
+  }
+
+  /* A visible focus ring on every interactive element, for keyboard users. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-600;
+  }
+
+  /* Remove the number-input spinners: quantity fields use explicit controls. */
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer utilities {
+  /* Tabular figures so columns of money line up on the decimal point. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-slate-300) transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300;
+  }
+}
+
+/* Recharts: inherit our typography rather than its own defaults. */
+.recharts-wrapper,
+.recharts-surface {
+  font-family: var(--font-sans);
+}
+.recharts-cartesian-axis-tick-value {
+  font-size: 11.5px;
+  fill: var(--color-slate-500);
+}

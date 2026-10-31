@@ -1,0 +1,23 @@
+line-length = 90
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "C4"]
+ignore = [
+    # Long lines are left to the formatter; prose in docstrings often exceeds the limit.
+    "E501",
+    # PEP 695 `class Page[T]` syntax. Kept on the classic Generic/TypeVar form
+    # because Pydantic's generic-model machinery is better exercised with it.
+    "UP046",
+    "UP047",
+]
+
+[lint.per-file-ignores]
+# Query()/Body()/Depends() in argument defaults is how FastAPI declares
+# parameters; it is the framework idiom, not a mutable-default bug.
+"app/api/**" = ["B008"]
+# Tests import fixtures from conftest and use its private login helper.
+"tests/**" = ["B008"]
+
+[lint.isort]
+known-first-party = ["app", "tests"]

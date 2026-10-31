@@ -1,0 +1,24 @@
+# ---- Web framework ----
+fastapi==0.118.0
+uvicorn[standard]==0.37.0
+python-multipart==0.0.20
+
+# ---- Validation / settings ----
+pydantic==2.11.9
+pydantic-settings==2.10.1
+email-validator==2.3.0
+
+# ---- Database ----
+pymongo==4.15.1
+
+# ---- Security ----
+PyJWT==2.10.1
+bcrypt==4.3.0
+
+# ---- Documents ----
+reportlab==4.4.4
+
+# ---- Testing ----
+pytest==8.4.2
+pytest-asyncio==1.2.0
+httpx==0.28.1

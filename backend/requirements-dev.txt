@@ -1,0 +1,7 @@
+-r requirements.txt
+
+# Linting (configured by ruff.toml)
+ruff==0.17.3
+
+# Used to assert on generated PDF content
+pypdf==6.21.4

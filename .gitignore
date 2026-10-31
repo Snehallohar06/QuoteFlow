@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment
+.env
+.env.*
+!.env.example
+.env.local
+
+# Generated artefacts
+backend/storage/quotations/*.pdf
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+.eslintcache
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+
+# Tool caches
+.ruff_cache/
+
+# Intermediate test-report XML (TEST_REPORT.md is the committed artefact)
+backend/.pytest-report.xml

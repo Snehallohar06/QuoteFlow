@@ -1,0 +1,65 @@
+# QuoteFlow — full stack for a single host.
+#
+#   cp .env.docker.example .env      # then set the two secrets
+#   docker compose up --build
+#   docker compose exec backend python -m app.db.seed --reset
+#
+# The app is then on http://localhost:8080. Only the frontend publishes a port;
+# MongoDB and the API stay on the internal network.
+
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGODB_DB_NAME:-quoteflow}
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    # Not published: nothing outside the compose network needs the database.
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      DEBUG: "false"
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DB_NAME: ${MONGODB_DB_NAME:-quoteflow}
+      # Required. The stack refuses to be useful without them being changed.
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?set JWT_SECRET_KEY in .env}
+      VERIFICATION_SECRET: ${VERIFICATION_SECRET:?set VERIFICATION_SECRET in .env}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
+      REFRESH_TOKEN_EXPIRE_DAYS: ${REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      # The frontend is same-origin behind nginx, so CORS is not needed; this
+      # is here for a deployment that serves the two from different hosts.
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      PDF_STORAGE_DIR: /app/storage/quotations
+    volumes:
+      # Generated quotation PDFs survive a redeploy.
+      - quotation-pdfs:/app/storage
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Blank: the bundle uses relative /api URLs, proxied by nginx.
+        VITE_API_BASE_URL: ""
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+
+volumes:
+  mongo-data:
+  quotation-pdfs:
